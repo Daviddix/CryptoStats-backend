@@ -1,7 +1,9 @@
 const express = require("express")
+const cors = require("cors")
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 require("dotenv").config()
 const PORT = process.env.PORT || 3000
 
@@ -63,11 +65,32 @@ app.get("/api/search", async(req, res)=>{
             return res.status(500).json({status: "error", reason : coinsInfo})
         }
     
-        res.send(coinsInfo)
+        res.json(coinsInfo)
 
     }
     catch(err){
         return res.status(500).json({status : "error", reason : "An error ocurred on the server", info: err})
+    }
+})
+
+app.get("/api/displayFavorite", async(req, res)=>{
+    try{
+        const {coinNames} = req.query
+        
+        const coinNamesFetchUrl = coinNames.split(",").join("%2C").toLowerCase()
+        
+        const rawFetch = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinNamesFetchUrl}&sparkline=true`)
+
+        const response = await rawFetch.json()
+
+        if(!rawFetch.ok){
+            return res.status(500).json({status : "error", reason : "An error ocurred when getting the coin info"})
+        }
+
+        res.json(response)
+    }
+    catch(err){
+        return res.status(500).json({status : "error", reason : "An error ocurred on the server", info : err})
     }
 })
 
