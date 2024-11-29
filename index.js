@@ -48,12 +48,12 @@ app.get("/api/getTrendingCoins", async (req,res)=>{
 
 app.get("/api/search", async(req, res)=>{
     try{
-        const {searchQuery, categoryQuery} = req.query
+        const {searchQuery, categoryQuery, currency} = req.query
 
         const rawFetch = await fetch(`https://api.coingecko.com/api/v3/search?query=${searchQuery}`, options)
 
         if(!rawFetch.ok){
-            return res.status(500).json({status: "error", reason : "An error ocurred when trying to get search term"})
+            return res.status(500).json({status: "error", reason : "An error occurred when trying to get search term"})
         }
 
         const {coins} = await rawFetch.json()
@@ -70,7 +70,7 @@ app.get("/api/search", async(req, res)=>{
 
         const searchCategory = categoryQuery == "All" ? "" : `&category=${categoryQuery}`
 
-        const rawFetchAgain = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinNamesFetchUrl}${searchCategory}`, options)
+        const rawFetchAgain = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${coinNamesFetchUrl}${searchCategory}`, options)
     
         const coinsInfo = await rawFetchAgain.json()
     
@@ -82,28 +82,29 @@ app.get("/api/search", async(req, res)=>{
 
     }
     catch(err){
-        return res.status(500).json({status : "error", reason : "An error ocurred on the server", info: err})
+        return res.status(500).json({status : "error", reason : "An error occurred on the server", info: err})
     }
 })
 
 app.get("/api/displayFavorite", async(req, res)=>{
     try{
         const {coinNames} = req.query
+        const {currency} = req.query
         
         const coinNamesFetchUrl = coinNames.split(",").join("%2C").toLowerCase()
         
-        const rawFetch = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinNamesFetchUrl}&sparkline=true`)
+        const rawFetch = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${coinNamesFetchUrl}&sparkline=true`)
 
         const response = await rawFetch.json()
 
         if(!rawFetch.ok){
-            return res.status(500).json({status : "error", reason : "An error ocurred when getting the coin info"})
+            return res.status(500).json({status : "error", reason : "An error occurred when getting the coin info", info : response})
         }
 
         res.json(response)
     }
     catch(err){
-        return res.status(500).json({status : "error", reason : "An error ocurred on the server", info : err})
+        return res.status(500).json({status : "error", reason : "An error occurred on the server", info : err})
     }
 })
 
