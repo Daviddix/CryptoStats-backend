@@ -93,7 +93,7 @@ app.get("/api/displayFavorite", async(req, res)=>{
         
         const coinNamesFetchUrl = coinNames.split(",").join("%2C").toLowerCase()
         
-        const rawFetch = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${coinNamesFetchUrl}&sparkline=true`)
+        const rawFetch = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${coinNamesFetchUrl}&sparkline=true`, options)
 
         const response = await rawFetch.json()
 
