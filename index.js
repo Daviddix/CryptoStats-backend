@@ -6,7 +6,7 @@ app.use(express.json())
 require("dotenv").config()
 const PORT = process.env.PORT || 3000
 
-const whitelist = ['chrome-extension://apnalilblhlemleggbcddjpmkciocimc']
+const whitelist = ['chrome-extension://apnalilblhlemleggbcddjpmkciocimc', 'moz-extension://c204a767-2b47-4c86-88e7-c7177af2f94c']
 
 const corsOptions = {
   origin: function (origin, callback) {
